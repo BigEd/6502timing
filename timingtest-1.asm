@@ -1,5 +1,6 @@
 ; Instruction timings for 6502 emulator debugging
 ; Exercise all instructions and all cases of page crossing
+; For discussion, please see http://forum.6502.org/viewtopic.php?f=8&t=3340
 ;
 ; There's no timing done in this code: use a hardware timing
 ; or instrumentation in your emulator of choice.
