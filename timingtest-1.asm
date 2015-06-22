@@ -9,6 +9,9 @@
 ;
 ; Using version 1.2.11 of that program, this version executes in
 ;    1130 clocks
+; But visual6502, which should be a more trusted reference, executes in
+;    1141 clocks
+; See http://goo.gl/956Cxi
 ;
 ; When modifying, take care that all far branches still cross a page boundary.
 ; See labels 'far1' and so on.
