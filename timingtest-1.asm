@@ -42,9 +42,9 @@ zdummy=$17
 dummy=$1717
 
  .ORG $1000
-start
+start:
 
-init
+init:
  LDX #$FF
  TXS
  LDX #1
@@ -52,14 +52,14 @@ init
  STX zdummy+1
  STX zdummy-1  ; zdummy-1 also points to $0101 - that's zdummy,X with X=$FF
 
-transfers
+transfers:
  TXA
  TAY
  TYA
  TSX
  TAX
  
-arithmetic
+arithmetic:
  LDX #0 ; non-page-crossing
  LDY #0
  ORA (zdummy,X)
@@ -265,138 +265,138 @@ rmw: ; may need to restore our zp pointer value
  DEC dummy,X
  INC dummy,X
 
-branches ; forward, backward, both with and without a page crossing, also not takens
+branches: ; forward, backward, both with and without a page crossing, also not takens
  LDX #0
- BPL .1 ; forward, no page crossing
-.2
+ BPL br1a ; forward, no page crossing
+br1b:
  BPL far1 ; forward, page crossing
-.1
- BMI .1 ; not taken
- BPL .2 ; backward
-return1
+br1a:
+ BMI br1a ; not taken
+ BPL br1b ; backward
+return1:
 
- BEQ .1 ; forward, no page crossing
-.2
+ BEQ br2a ; forward, no page crossing
+br2b:
  BEQ far2 ; forward, page crossing
-.1
- BNE .1 ; not taken
- BEQ .2 ; backward
-return2
+br2a:
+ BNE br2a ; not taken
+ BEQ br2b ; backward
+return2:
 
  LDX #$FF
- BMI .1 ; forward, no page crossing
-.2
+ BMI br3a ; forward, no page crossing
+br3b:
  BMI far3 ; forward, page crossing
-.1
- BPL .1 ; not taken
- BMI .2 ; backward
-return3
+br3a:
+ BPL br3a ; not taken
+ BMI br3b ; backward
+return3:
 
- BNE .1 ; forward, no page crossing
-.2
+ BNE br4a ; forward, no page crossing
+br4b:
  BNE far4 ; forward, page crossing
-.1
- BEQ .1 ; not taken
- BNE .2 ; backward
-return4
+br4a:
+ BEQ br4a ; not taken
+ BNE br4b ; backward
+return4:
 
  CLC
- BCC .1 ; forward, no page crossing
-.2
+ BCC br5a ; forward, no page crossing
+br5b:
  BCC far5 ; forward, page crossing
-.1
- BCS .1 ; not taken
- BCC .2 ; backward
-return5
+br5a:
+ BCS br5a ; not taken
+ BCC br5b ; backward
+return5:
 
  SEC
- BCS .1 ; forward, no page crossing
-.2
+ BCS br6a ; forward, no page crossing
+br6b:
  BCS far6 ; forward, page crossing
-.1
- BCC .1 ; not taken
- BCS .2 ; backward
-return6
+br6a:
+ BCC br6a ; not taken
+ BCS br6b ; backward
+return6:
 
  CLV
- BVC .1 ; forward, no page crossing
-.2
+ BVC br7a ; forward, no page crossing
+br7b:
  BVC far7 ; forward, page crossing
-.1
- BVS .1 ; not taken
- BVC .2 ; backward
-return7
+br7a:
+ BVS br7a ; not taken
+ BVC br7b ; backward
+return7:
 
  LDA #$7F
  ADC #$7F ; set the overflow flag
- BVS .1 ; forward, no page crossing
-.2
+ BVS br8a ; forward, no page crossing
+br8b:
  BVS far8 ; forward, page crossing
-.1
- BVC .1 ; not taken
- BVS .2 ; backward
-return8
+br8a:
+ BVC br8a ; not taken
+ BVS br8b ; backward
+return8:
 
-implicit
+implicit:
  INY
  DEY
  INX
  DEX
  NOP
  
-accumulator
+accumulator:
  ASL
  ROL
  LSR
  ROR
 
-jsrandmore
+jsrandmore:
  JSR trampoline ; more instructions tested at destination
 
-stack
+stack:
  PHA
  PLA
  PHP
  PLP
 
-flags
+flags:
  SEI
  CLI
  SED
  CLD
 
-hopoverbackbranches
+hopoverbackbranches:
  JMP continue
 
-farbackbranches ; reached with a page-crossing forward branch, returning the same way
-far1
+farbackbranches: ; reached with a page-crossing forward branch, returning the same way
+far1:
  BPL return1
-far2
+far2:
  BEQ return2
-far3
+far3:
  BMI return3
-far4
+far4:
  BNE return4
-far5
+far5:
  BCC return5
-far6
+far6:
  BCS return6
-far7
+far7:
  BVC return7
-far8
+far8:
  BVS return8
 
-trampoline ; testing a JSR but let's test an RTI too while we're here
+trampoline: ; testing a JSR but let's test an RTI too while we're here
  JSR rtitest
  ; we'll place an RTS and jump to it
  LDA returnop
  LDX #0
  STA (zdummy,X)
  JMP (zdummy)
-returnop
+returnop:
  RTS
  
-rtitest
+rtitest:
  PLA
  CLC
  ADC #1 ; don't bother incrementing the high byte we should be safe
@@ -404,7 +404,7 @@ rtitest
  PHA
  RTI
 
-continue
+continue:
  LDX #0 ; non-page-crossing
  BIT zdummy
  BIT dummy
@@ -427,7 +427,7 @@ continue
  CPX zdummy
  CPX dummy
 
-end
- .DB $bb ; terminate
+end:
+ .DB $bb ; pseudo-op to terminate Kowalski simulator
  
  JMP start
