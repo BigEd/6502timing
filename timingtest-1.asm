@@ -1,9 +1,11 @@
 ; Instruction timings for 6502 emulator debugging
 ; Exercise all instructions and all cases of page crossing
-; For discussion, please see http://forum.6502.org/viewtopic.php?f=8&t=3340
+; For discussion, please see http://forum.6502.org/viewtopic.php?f=8&t=3340
 ;
 ; There's no timing done in this code: use a hardware timing
 ; or instrumentation in your emulator of choice.
+;
+; BRK is not included for portability reasons.
 ;
 ; Assembly syntax is for Michal Kowalski's simulator as found at
 ;    www.exifpro.com/utils.html
@@ -391,8 +393,8 @@ trampoline ; testing a JSR but let's test an RTI too while we're here
  LDX #0
  STA (zdummy,X)
  JMP (zdummy)
-returnop 
- RTS 
+returnop
+ RTS
  
 rtitest
  PLA
@@ -417,6 +419,7 @@ continue
  LDY zdummy,X
  STY zdummy,X
  LDY dummy,X
+
  CPY #zdummy
  CPY zdummy
  CPY dummy
